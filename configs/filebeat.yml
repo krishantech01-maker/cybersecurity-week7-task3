@@ -1,0 +1,27 @@
+# Filebeat Configuration for Endpoint Log Collection - Week 7 Task 3
+filebeat.inputs:
+  - type: filestream
+    id: linux-auth-logs
+    enabled: true
+    paths:
+      - /var/log/auth.log
+      - /var/log/syslog
+    fields:
+      log_source: "linux_endpoint"
+      environment: "production_lab"
+
+  - type: filestream
+    id: nginx-web-logs
+    enabled: true
+    paths:
+      - /var/log/nginx/access.log
+      - /var/log/nginx/error.log
+    fields:
+      log_source: "web_server"
+
+output.logstash:
+  hosts: ["192.168.56.10:5044"]
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
